@@ -3,6 +3,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import cors from "cors";
 
 // 載入環境變數
 dotenv.config();
@@ -11,6 +12,22 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: "15mb" })); // 支援較大的逐字稿上傳
+
+// CORS 設定：可透過 ALLOWED_ORIGINS 指定允許來源（以逗號分隔）
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || "";
+const allowedOrigins = allowedOriginsEnv.split(",").map(s => s.trim()).filter(Boolean);
+if (allowedOrigins.length > 0) {
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow server-to-server or same-origin (no origin)
+      if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+      return callback(new Error("CORS policy: origin not allowed"), false);
+    }
+  }));
+} else {
+  // 若未設定 ALLOWED_ORIGINS，預設允許所有來源（方便本機開發）
+  app.use(cors());
+}
 
 // 延遲初始化 Gemini 用戶端以避免啟動時因金鑰缺失直接當機
 let aiClient: GoogleGenAI | null = null;
