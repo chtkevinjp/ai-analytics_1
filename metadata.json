@@ -1,8 +1,0 @@
-{
-  "name": "AI 會議記錄生成與翻譯工具",
-  "description": "一鍵生成會議總結，自動擷取重點、行動待辦事項與決策分析，並支援多國語言翻譯與漂亮的 Markdown 格式化匯出。",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
